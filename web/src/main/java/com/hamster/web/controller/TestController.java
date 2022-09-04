@@ -1,6 +1,6 @@
 package com.hamster.web.controller;
 
-import com.hamster.dao.domain.EmpDAO;
+import com.hamster.dao.domain.Emp;
 import com.hamster.service.TestService;
 import com.hamster.web.vo.UserInfoVo;
 import io.swagger.annotations.Api;
@@ -24,7 +24,7 @@ public class TestController {
     @GetMapping("userInfo")
     @ApiOperation(value = "获取用户信息")
     public UserInfoVo getUserId(@ApiParam(value = "数据id", required = true, example = "1") @RequestParam long id) {
-        EmpDAO userMsg = testService.getUserMsg(id);
+        Emp userMsg = testService.getUserMsg(id);
         UserInfoVo userInfoVo = new UserInfoVo();
         BeanUtils.copyProperties(userMsg, userInfoVo);
         log.info("userInfo, {}",userInfoVo);

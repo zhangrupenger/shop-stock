@@ -3,15 +3,15 @@ package com.hamster.dao.domain;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EmpDAOExample {
+public class EmpExample {
     protected String orderByClause;
 
     protected boolean distinct;
 
     protected List<Criteria> oredCriteria;
 
-    public EmpDAOExample() {
-        oredCriteria = new ArrayList<Criteria>();
+    public EmpExample() {
+        oredCriteria = new ArrayList<>();
     }
 
     public void setOrderByClause(String orderByClause) {
@@ -68,7 +68,7 @@ public class EmpDAOExample {
 
         protected GeneratedCriteria() {
             super();
-            criteria = new ArrayList<Criterion>();
+            criteria = new ArrayList<>();
         }
 
         public boolean isValid() {
@@ -716,7 +716,6 @@ public class EmpDAOExample {
     }
 
     public static class Criteria extends GeneratedCriteria {
-
         protected Criteria() {
             super();
         }

@@ -1,9 +1,6 @@
 package com.hamster.dao.domain;
 
-import lombok.ToString;
-
-@ToString
-public class EmpDAO {
+public class Emp {
     private Long id;
 
     private Long userId;

@@ -1,10 +1,9 @@
 package com.hamster.service;
 
-import com.hamster.dao.domain.EmpDAO;
-import com.hamster.dao.domain.EmpDAOExample;
-import com.hamster.dao.mapper.EmpDAOMapper;
+import com.hamster.dao.domain.Emp;
+import com.hamster.dao.domain.EmpExample;
+import com.hamster.dao.mapper.EmpMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -14,12 +13,12 @@ import java.util.List;
 @Slf4j
 public class TestService {
     @Resource
-    private EmpDAOMapper empDAOMapper;
+    private EmpMapper empDAOMapper;
 
-    public EmpDAO getUserMsg(long id){
-        EmpDAOExample example = new EmpDAOExample();
+    public Emp getUserMsg(long id){
+        EmpExample example = new EmpExample();
         example.createCriteria().andIdEqualTo(1L);
-        List<EmpDAO> empDAOS = empDAOMapper.selectByExample(example);
+        List<Emp> empDAOS = empDAOMapper.selectByExample(example);
         log.info("userDao={}",empDAOS);
         return empDAOS.get(0);
     }

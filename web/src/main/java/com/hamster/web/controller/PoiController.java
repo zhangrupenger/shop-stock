@@ -31,7 +31,7 @@ public class PoiController {
         return new ResultVo<>(CodeEnum.SUCCESS.getCode(), CodeEnum.SUCCESS.getMsg(), poi);
     }
 
-    @PostMapping("getPoiList")
+    @GetMapping("getPoiList")
     @ApiOperation(value = "获取门店列表")
     public ResultVo<List<PoiFullInfo>> getPoiList(@RequestAttribute Long userId) throws BusinessException {
         List<PoiFullInfo> poiList = poiService.getPoiList(userId);

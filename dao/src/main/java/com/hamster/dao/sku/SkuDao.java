@@ -12,5 +12,6 @@ public interface SkuDao {
     default void insertSku(Sku sku){};
 
     List<SkuFullInfo> getSkuFullListByCodeForPage (String code, long poiId, int page, int pageSize);
+    List<SkuFullInfo> searchProductFullInfoMergeSizeByCode(String code, long poiId, int page, int pageSize);
 
 }

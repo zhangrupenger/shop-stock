@@ -1,8 +1,11 @@
-package com.hamster.web.vo;
+package com.hamster.service.exception;
 
 public enum CodeEnum {
     SUCCESS(0,"success"),
     ERROR(1, "error"),
+    PARAM_ERROR(2, "paramError"),
+    INNER_ERROR(3, "innerError"),
+    LOG_ERROR(4, "loginError"),
     ;
 
     CodeEnum(int code, String msg) {

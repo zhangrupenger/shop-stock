@@ -12,10 +12,11 @@
         <result column="size" jdbcType="VARCHAR" property="size" />
         <result column="stock" jdbcType="BIGINT" property="stock" />
     </resultMap>
+
     <select id="searchProductFullInfoByCode" parameterType="map" resultMap="BaseResultMap">
         select sku.id as sku_id,sku.code as code,sku.poi_id as poi_id ,sku.sku_name as sku_name, sku.picture as picture,
                sku.color as color, sku.size as size, stock.stock as stock
-        from sku left join stock on sku.id=stock.sku_id
+        from sku inner join stock on sku.id=stock.sku_id
         where 1=1
         <if test="skuFullQueryParam!=null and skuFullQueryParam.code != null">
             and sku.code=${skuFullQueryParam.code}
@@ -28,5 +29,35 @@
             limit ${page.offset},${page.limit}
         </if>
     </select>
+
+    <select id="searchProductFullInfoMergeSizeByCode" parameterType="map" resultMap="BaseResultMap">
+        select sku.code as code,sku.sku_name as sku_name, sum(stock.stock) as stock
+        from sku inner join stock on sku.id=stock.sku_id
+        where 1=1
+        <if test="skuFullQueryParam!=null and skuFullQueryParam.code != null and skuFullQueryParam.code !=''">
+            and sku.code=${skuFullQueryParam.code}
+        </if>
+        <if test="skuFullQueryParam!=null and skuFullQueryParam.poiId != null">
+            and sku.poi_id=${skuFullQueryParam.poiId}
+        </if>
+        GROUP BY sku.code,sku.sku_name
+        order by sku.code desc
+        <if test="page != null">
+            limit ${page.offset},${page.limit}
+        </if>
+    </select>
+    <select id="getPoiFullInfoList" parameterType="java.lang.Long" resultType="com.hamster.dao.domain.PoiFullInfo">
+        select poi.id as id, poi.poi_name poiName, poi.address as address,emp.role as role  from emp inner join user_info on emp.user_id=user_info.id
+        inner join poi on emp.poi_id=poi.id
+        where 1=1
+
+        <if test="userId!=null and userId>0">
+            and emp.user_id=${userId}
+        </if>
+        order by  emp.ctime desc
+
+    </select>
+
+
 
 </mapper>

@@ -58,4 +58,15 @@ public class SkuDaoImpl implements SkuDao {
         return skuStockMapper.searchProductFullInfoByCode(skuFullQueryParam, pageParam);
 
     }
+
+    @Override
+    public List<SkuFullInfo> searchProductFullInfoMergeSizeByCode(String code, long poiId, int page, int pageSize) {
+        SkuFullQueryParam skuFullQueryParam = new SkuFullQueryParam();
+        skuFullQueryParam.setCode(code);
+        skuFullQueryParam.setPoiId(poiId);
+        PageParam pageParam = new PageParam();
+        pageParam.setOffset(page > 0 ? (page - 1) * pageSize : 0);
+        pageParam.setLimit(pageSize);
+        return skuStockMapper.searchProductFullInfoMergeSizeByCode(skuFullQueryParam, pageParam);
+    }
 }

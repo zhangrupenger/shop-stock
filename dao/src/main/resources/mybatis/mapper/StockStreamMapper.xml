@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.hamster.dao.mapper.StockMapper">
-  <resultMap id="BaseResultMap" type="com.hamster.dao.domain.Stock">
+<mapper namespace="com.hamster.dao.mapper.StockStreamMapper">
+  <resultMap id="BaseResultMap" type="com.hamster.dao.domain.StockStream">
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="sku_id" jdbcType="BIGINT" property="skuId" />
-    <result column="poi_id" jdbcType="BIGINT" property="poiId" />
-    <result column="stock" jdbcType="BIGINT" property="stock" />
+    <result column="operator" jdbcType="INTEGER" property="operator" />
+    <result column="quantity" jdbcType="BIGINT" property="quantity" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="ext_id" jdbcType="VARCHAR" property="extId" />
     <result column="ctime" jdbcType="BIGINT" property="ctime" />
-    <result column="valid" jdbcType="BIGINT" property="valid" />
+    <result column="valid" jdbcType="SMALLINT" property="valid" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -68,16 +70,16 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, sku_id, poi_id, stock, ctime, valid
+    id, sku_id, operator, quantity, remark, ext_id, ctime, valid
   </sql>
-  <select id="selectByExample" parameterType="com.hamster.dao.domain.StockExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="com.hamster.dao.domain.StockStreamExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
     </if>
     'true' as QUERYID,
     <include refid="Base_Column_List" />
-    from stock
+    from stock_stream
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -88,27 +90,29 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from stock
+    from stock_stream
     where id = #{id,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from stock
+    delete from stock_stream
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <delete id="deleteByExample" parameterType="com.hamster.dao.domain.StockExample">
-    delete from stock
+  <delete id="deleteByExample" parameterType="com.hamster.dao.domain.StockStreamExample">
+    delete from stock_stream
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.hamster.dao.domain.Stock">
-    insert into stock (id, sku_id, poi_id, 
-      stock, ctime, valid)
-    values (#{id,jdbcType=INTEGER}, #{skuId,jdbcType=BIGINT}, #{poiId,jdbcType=BIGINT}, 
-      #{stock,jdbcType=BIGINT}, #{ctime,jdbcType=BIGINT}, #{valid,jdbcType=BIGINT})
+  <insert id="insert" parameterType="com.hamster.dao.domain.StockStream">
+    insert into stock_stream (id, sku_id, operator, 
+      quantity, remark, ext_id, 
+      ctime, valid)
+    values (#{id,jdbcType=INTEGER}, #{skuId,jdbcType=BIGINT}, #{operator,jdbcType=INTEGER}, 
+      #{quantity,jdbcType=BIGINT}, #{remark,jdbcType=VARCHAR}, #{extId,jdbcType=VARCHAR}, 
+      #{ctime,jdbcType=BIGINT}, #{valid,jdbcType=SMALLINT})
   </insert>
-  <insert id="insertSelective" parameterType="com.hamster.dao.domain.Stock" useGeneratedKeys="true" keyProperty="id">
-    insert into stock
+  <insert id="insertSelective" parameterType="com.hamster.dao.domain.StockStream">
+    insert into stock_stream
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
@@ -116,11 +120,17 @@
       <if test="skuId != null">
         sku_id,
       </if>
-      <if test="poiId != null">
-        poi_id,
+      <if test="operator != null">
+        operator,
       </if>
-      <if test="stock != null">
-        stock,
+      <if test="quantity != null">
+        quantity,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="extId != null">
+        ext_id,
       </if>
       <if test="ctime != null">
         ctime,
@@ -136,28 +146,34 @@
       <if test="skuId != null">
         #{skuId,jdbcType=BIGINT},
       </if>
-      <if test="poiId != null">
-        #{poiId,jdbcType=BIGINT},
+      <if test="operator != null">
+        #{operator,jdbcType=INTEGER},
       </if>
-      <if test="stock != null">
-        #{stock,jdbcType=BIGINT},
+      <if test="quantity != null">
+        #{quantity,jdbcType=BIGINT},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="extId != null">
+        #{extId,jdbcType=VARCHAR},
       </if>
       <if test="ctime != null">
         #{ctime,jdbcType=BIGINT},
       </if>
       <if test="valid != null">
-        #{valid,jdbcType=BIGINT},
+        #{valid,jdbcType=SMALLINT},
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.hamster.dao.domain.StockExample" resultType="java.lang.Long">
-    select count(*) from stock
+  <select id="countByExample" parameterType="com.hamster.dao.domain.StockStreamExample" resultType="java.lang.Long">
+    select count(*) from stock_stream
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update stock
+    update stock_stream
     <set>
       <if test="record.id != null">
         id = #{record.id,jdbcType=INTEGER},
@@ -165,17 +181,23 @@
       <if test="record.skuId != null">
         sku_id = #{record.skuId,jdbcType=BIGINT},
       </if>
-      <if test="record.poiId != null">
-        poi_id = #{record.poiId,jdbcType=BIGINT},
+      <if test="record.operator != null">
+        operator = #{record.operator,jdbcType=INTEGER},
       </if>
-      <if test="record.stock != null">
-        stock = #{record.stock,jdbcType=BIGINT},
+      <if test="record.quantity != null">
+        quantity = #{record.quantity,jdbcType=BIGINT},
+      </if>
+      <if test="record.remark != null">
+        remark = #{record.remark,jdbcType=VARCHAR},
+      </if>
+      <if test="record.extId != null">
+        ext_id = #{record.extId,jdbcType=VARCHAR},
       </if>
       <if test="record.ctime != null">
         ctime = #{record.ctime,jdbcType=BIGINT},
       </if>
       <if test="record.valid != null">
-        valid = #{record.valid,jdbcType=BIGINT},
+        valid = #{record.valid,jdbcType=SMALLINT},
       </if>
     </set>
     <if test="_parameter != null">
@@ -183,45 +205,55 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update stock
+    update stock_stream
     set id = #{record.id,jdbcType=INTEGER},
       sku_id = #{record.skuId,jdbcType=BIGINT},
-      poi_id = #{record.poiId,jdbcType=BIGINT},
-      stock = #{record.stock,jdbcType=BIGINT},
+      operator = #{record.operator,jdbcType=INTEGER},
+      quantity = #{record.quantity,jdbcType=BIGINT},
+      remark = #{record.remark,jdbcType=VARCHAR},
+      ext_id = #{record.extId,jdbcType=VARCHAR},
       ctime = #{record.ctime,jdbcType=BIGINT},
-      valid = #{record.valid,jdbcType=BIGINT}
+      valid = #{record.valid,jdbcType=SMALLINT}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.hamster.dao.domain.Stock">
-    update stock
+  <update id="updateByPrimaryKeySelective" parameterType="com.hamster.dao.domain.StockStream">
+    update stock_stream
     <set>
       <if test="skuId != null">
         sku_id = #{skuId,jdbcType=BIGINT},
       </if>
-      <if test="poiId != null">
-        poi_id = #{poiId,jdbcType=BIGINT},
+      <if test="operator != null">
+        operator = #{operator,jdbcType=INTEGER},
       </if>
-      <if test="stock != null">
-        stock = #{stock,jdbcType=BIGINT},
+      <if test="quantity != null">
+        quantity = #{quantity,jdbcType=BIGINT},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="extId != null">
+        ext_id = #{extId,jdbcType=VARCHAR},
       </if>
       <if test="ctime != null">
         ctime = #{ctime,jdbcType=BIGINT},
       </if>
       <if test="valid != null">
-        valid = #{valid,jdbcType=BIGINT},
+        valid = #{valid,jdbcType=SMALLINT},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.hamster.dao.domain.Stock">
-    update stock
+  <update id="updateByPrimaryKey" parameterType="com.hamster.dao.domain.StockStream">
+    update stock_stream
     set sku_id = #{skuId,jdbcType=BIGINT},
-      poi_id = #{poiId,jdbcType=BIGINT},
-      stock = #{stock,jdbcType=BIGINT},
+      operator = #{operator,jdbcType=INTEGER},
+      quantity = #{quantity,jdbcType=BIGINT},
+      remark = #{remark,jdbcType=VARCHAR},
+      ext_id = #{extId,jdbcType=VARCHAR},
       ctime = #{ctime,jdbcType=BIGINT},
-      valid = #{valid,jdbcType=BIGINT}
+      valid = #{valid,jdbcType=SMALLINT}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

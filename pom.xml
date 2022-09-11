@@ -60,6 +60,12 @@
                <scope>provided</scope>
            </dependency>
 
+           <dependency>
+               <groupId>commons-collections</groupId>
+               <artifactId>commons-collections</artifactId>
+               <version>3.2.2</version>
+           </dependency>
+
            <!-- swagger2 -->
            <dependency>
                <groupId>io.springfox</groupId>

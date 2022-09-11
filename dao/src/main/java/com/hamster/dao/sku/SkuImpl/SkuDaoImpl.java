@@ -2,10 +2,15 @@ package com.hamster.dao.sku.SkuImpl;
 
 import com.hamster.dao.domain.Sku;
 import com.hamster.dao.domain.SkuExample;
+import com.hamster.dao.domain.SkuFullInfo;
 import com.hamster.dao.mapper.SkuMapper;
+import com.hamster.dao.mapper.SkuStockMapper;
+import com.hamster.dao.param.PageParam;
+import com.hamster.dao.param.SkuFullQueryParam;
 import com.hamster.dao.sku.SkuDao;
+import com.mysql.cj.util.StringUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Repository;
-import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -14,6 +19,8 @@ import java.util.List;
 public class SkuDaoImpl implements SkuDao {
     @Resource
     private SkuMapper skuMapper;
+    @Resource
+    private SkuStockMapper skuStockMapper;
 
     @Override
     public List<Sku> getSkuListByCode(String code, long poiId) {
@@ -38,5 +45,17 @@ public class SkuDaoImpl implements SkuDao {
         sku.setCtime(System.currentTimeMillis());
         sku.setValid((short) 1);
         skuMapper.insertSelective(sku);
+    }
+
+    @Override
+    public List<SkuFullInfo> getSkuFullListByCodeForPage(String code, long poiId, int page, int pageSize) {
+        SkuFullQueryParam skuFullQueryParam = new SkuFullQueryParam();
+        skuFullQueryParam.setCode(code);
+        skuFullQueryParam.setPoiId(poiId);
+        PageParam pageParam = new PageParam();
+        pageParam.setOffset(page > 0 ? (page - 1) * pageSize : 0);
+        pageParam.setLimit(pageSize);
+        return skuStockMapper.searchProductFullInfoByCode(skuFullQueryParam, pageParam);
+
     }
 }

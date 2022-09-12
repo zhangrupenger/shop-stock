@@ -2,10 +2,11 @@ package com.hamster.service.exception;
 
 public enum CodeEnum {
     SUCCESS(0,"success"),
-    ERROR(1, "error"),
-    PARAM_ERROR(2, "paramError"),
-    INNER_ERROR(3, "innerError"),
-    LOG_ERROR(4, "loginError"),
+    ERROR(1, "请刷新后重试"),
+    PARAM_ERROR(2, "参数有误哦"),
+    INNER_ERROR(3, "网络不太稳定，刷新下试试"),
+    LOG_ERROR(4, "请先登录"),
+    NOT_REGISTER_ERROR(5, "请到个人中心登录或注册哦"),
     ;
 
     CodeEnum(int code, String msg) {

@@ -5,12 +5,14 @@ import com.hamster.service.AuthServiceUtils;
 import com.hamster.service.UserInfoService;
 import com.hamster.service.exception.BusinessException;
 import com.hamster.service.exception.CodeEnum;
+import com.hamster.web.vo.LoginInfo;
 import com.hamster.web.vo.ResultVo;
 import com.hamster.web.vo.WxLoginVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.models.auth.In;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
@@ -21,7 +23,7 @@ import java.util.Map;
 
 @Api(value = "用户相关API")
 @RestController
-@RequestMapping("/user/")
+@RequestMapping("/user")
 @Slf4j
 public class UserController {
     private static final String APPID = "wxa946b86538783ba7";
@@ -34,7 +36,9 @@ public class UserController {
 
     @GetMapping("login")
     @ApiOperation(notes = "登录", value = "ResultVo")
-    public ResultVo<String> login(@RequestParam String code) throws BusinessException {
+    public ResultVo<LoginInfo> login(@RequestParam String code, @RequestParam(required = false) String userName,
+                                     @RequestParam(required = false) String picture) throws BusinessException {
+        log.info("userName:{},picture:{},code:{}",userName,picture,code);
         Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("appid", APPID);
         paramMap.put("secret", APPSECRET);
@@ -48,16 +52,20 @@ public class UserController {
         }
         // 获取body
         WxLoginVo result = responseEntity.getBody();
-        if (!result.getErrcode().equals("0")) {
+        if (StringUtils.isNotEmpty(result.getErrcode()) && !result.getErrcode().equals("0")) {
             log.error("登录发生异常code，result:{}", result);
             return new ResultVo(CodeEnum.LOG_ERROR.getCode(), CodeEnum.LOG_ERROR.getMsg(), result);
         }
         log.info("微信登录校验成功 result={}", result);
-        UserInfo userInfo = userInfoService.getUserInfo(result.getOpenid());
+        UserInfo userInfo = userInfoService.getUserInfo(result.getOpenid(), userName, picture);
         log.info("内部用户信息 userInfo={}", userInfo);
         String token = AuthServiceUtils.getToken(String.valueOf(userInfo.getId()));
         log.info("token = {}",token);
-        return new ResultVo(CodeEnum.SUCCESS.getCode(), CodeEnum.SUCCESS.getMsg(), token);
+        LoginInfo loginInfo = new LoginInfo();
+        loginInfo.setPicture(userInfo.getPicture());
+        loginInfo.setUserName(userInfo.getUserName());
+        loginInfo.setToken(token);
+        return new ResultVo(CodeEnum.SUCCESS.getCode(), CodeEnum.SUCCESS.getMsg(), loginInfo);
     }
     @GetMapping("getFullMessageToken")
     @ApiOperation(notes = "选定门店后换取全信息token", value = "ResultVo")

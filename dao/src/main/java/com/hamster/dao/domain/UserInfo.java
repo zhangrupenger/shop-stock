@@ -1,5 +1,8 @@
 package com.hamster.dao.domain;
 
+import lombok.ToString;
+
+@ToString
 public class UserInfo {
     private Long id;
 

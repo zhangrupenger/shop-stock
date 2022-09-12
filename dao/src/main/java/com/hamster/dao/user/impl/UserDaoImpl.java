@@ -19,11 +19,13 @@ public class UserDaoImpl implements UserDao {
     private UserInfoMapper userMapper;
 
     @Override
-    public UserInfo insertUser(String openId) {
+    public UserInfo insertUser(String openId, String userName, String picture) {
         UserInfo user = new UserInfo();
         user.setOpenId(openId);
         user.setCtime(System.currentTimeMillis());
         user.setValid((short)1);
+        user.setUserName(userName);
+        user.setPicture(picture);
         userMapper.insertSelective(user);
         return user;
     }

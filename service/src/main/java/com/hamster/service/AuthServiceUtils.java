@@ -8,6 +8,7 @@ import com.hamster.service.exception.BusinessException;
 import com.hamster.service.exception.CodeEnum;
 import com.hamster.service.mode.UserLoginInfo;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -42,7 +43,10 @@ public class AuthServiceUtils {
             Map<String,Object> header = new HashMap<>();
             header.put("typ","JWT");
             header.put("alg","HS256");
-            token = JWT.create().withHeader(header).withClaim("userId",userId).withClaim("poiId",poiId).withClaim("role",role).withExpiresAt(date).sign(algorithm);
+            token = JWT.create().withHeader(header)
+                    .withClaim("userId",userId)
+                    .withClaim("poiId",poiId)
+                    .withClaim("role",role).withExpiresAt(date).sign(algorithm);
             return token;
         } catch (Exception e) {
             log.error("get token error",e);
@@ -58,10 +62,17 @@ public class AuthServiceUtils {
             DecodedJWT jwt = verifier.verify(token);
             String userId = jwt.getClaim("userId").asString();
             String poiId = jwt.getClaim("poiId").asString();
+            String role  = jwt.getClaim("role").asString();
             UserLoginInfo loginInfo = new UserLoginInfo();
-            loginInfo.setUserId(Long.valueOf(userId));
-            loginInfo.setRole(1);
-            loginInfo.setPoiId(Long.valueOf(poiId));
+            if (StringUtils.isNotBlank(userId)) {
+                loginInfo.setUserId(Long.valueOf(userId));
+            }
+            if (StringUtils.isNotBlank(role)) {
+                loginInfo.setRole(Integer.valueOf(role));
+            }
+            if (StringUtils.isNotBlank(poiId)) {
+                loginInfo.setPoiId(Long.valueOf(poiId));
+            }
             return loginInfo;
         } catch (Exception e) {
            throw new BusinessException(CodeEnum.LOG_ERROR.getCode(), CodeEnum.LOG_ERROR.getMsg());

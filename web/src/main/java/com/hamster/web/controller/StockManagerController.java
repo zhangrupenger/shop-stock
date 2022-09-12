@@ -33,8 +33,8 @@ public class StockManagerController {
 
     @GetMapping("searchProductByCode")
     @ApiOperation(value = "ResultVo«List«T»»", notes = "根据code查询商品信息")
-    public ResultVo<List<SkuInfoVo>> searchProductByCode(@ApiParam(value = "商品码") @RequestParam String code) throws BusinessException {
-        List<Sku> skus = stockManagerService.searchProductByCode(code, 1L);
+    public ResultVo<List<SkuInfoVo>> searchProductByCode(@ApiParam(value = "商品码") @RequestParam String code, @ApiParam(hidden = true) @RequestAttribute Long poiId) throws BusinessException {
+        List<Sku> skus = stockManagerService.searchProductByCode(code, poiId);
         List<SkuInfoVo> skuInfoVos = VoConvertUtils.convertToSkInfoVo(skus);
         return new ResultVo(CodeEnum.SUCCESS.getCode(), CodeEnum.SUCCESS.getMsg(), skuInfoVos);
     }
@@ -42,9 +42,10 @@ public class StockManagerController {
     @GetMapping("searchProductFullInfoByCode")
     @ApiOperation(value = "ResultVo«List«T»»", notes = "根据code查询包含库存的商品信息")
     public ResultVo<List<ProductFullInfo>> searchProductFullInfoByCode(@ApiParam(value = "商品码") @RequestParam(required = false) String code,
-                                                                       @ApiParam(value = "页码") @RequestParam int page, @ApiParam(value = "每页条数") @RequestParam int pageSize) throws BusinessException {
+                                                                       @ApiParam(value = "页码") @RequestParam int page, @ApiParam(value = "每页条数") @RequestParam int pageSize,
+                                                                       @ApiParam(hidden = true) @RequestAttribute Long poiId) throws BusinessException {
 
-        List<com.hamster.service.mode.ProductFullInfo> productFullInfos = stockManagerService.searchProductFullInfoByCode(code, 1L, page, pageSize);
+        List<com.hamster.service.mode.ProductFullInfo> productFullInfos = stockManagerService.searchProductFullInfoByCode(code, poiId, page, pageSize);
         return new ResultVo(CodeEnum.SUCCESS.getCode(), CodeEnum.SUCCESS.getMsg(), productFullInfos);
 
 
@@ -53,9 +54,10 @@ public class StockManagerController {
     @GetMapping("searchProductFullInfoMergeSizeByCode")
     @ApiOperation(value = "ResultVo«List«T»»", notes = "根据code查询包含库存的商品信息(根据code聚合)")
     public ResultVo<List<ProductFullInfo>> searchProductFullInfoMergeSizeByCode(@ApiParam(value = "商品码") @RequestParam(required = false) String code,
+                                                                                @ApiParam(hidden = true) @RequestAttribute Long poiId,
                                                                                 @ApiParam(value = "页码") @RequestParam int page, @ApiParam(value = "每页条数") @RequestParam int pageSize) throws BusinessException {
         log.info("请求参数 code:{}",code);
-        List<com.hamster.service.mode.ProductFullInfo> productFullInfos = stockManagerService.searchProductFullInfoMergeSizeByCode(code, 1L, page, pageSize);
+        List<com.hamster.service.mode.ProductFullInfo> productFullInfos = stockManagerService.searchProductFullInfoMergeSizeByCode(code, poiId, page, pageSize);
         return new ResultVo(CodeEnum.SUCCESS.getCode(), CodeEnum.SUCCESS.getMsg(), productFullInfos);
 
 
@@ -85,11 +87,11 @@ public class StockManagerController {
 
     @PostMapping("stockIn")
     @ApiOperation(notes = "根据skuId入库", value = "ResultVo")
-    public ResultVo stockIn(@Valid @RequestBody StockInRquestParam param) throws BusinessException {
+    public ResultVo stockIn(@Valid @RequestBody StockInRquestParam param, @ApiParam(hidden = true) @RequestAttribute Long poiId) throws BusinessException {
         log.info("request:{}", param);
         StockInRquestParamModel request = new StockInRquestParamModel();
         BeanUtils.copyProperties(param, request);
-        stockManagerService.stockIn(request, 1L);
+        stockManagerService.stockIn(request, poiId);
         return new ResultVo(CodeEnum.SUCCESS.getCode(), CodeEnum.SUCCESS.getMsg());
 
     }

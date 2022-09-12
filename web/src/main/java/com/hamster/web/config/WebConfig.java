@@ -9,6 +9,12 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new TraceIdInterceptor());
-        registry.addInterceptor(new LogInfoInterceptor());
+        registry.addInterceptor(new LogInfoInterceptor())
+                .excludePathPatterns("/doc.html") //不需要拦截的地
+                .excludePathPatterns("/swagger-resources/**")
+                .excludePathPatterns("/webjars/**")
+                .excludePathPatterns("/v2/**")
+                .excludePathPatterns("/favicon.ico")
+                .excludePathPatterns("/swagger-ui.html/**");
     }
 }

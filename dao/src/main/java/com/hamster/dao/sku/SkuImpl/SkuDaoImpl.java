@@ -8,6 +8,7 @@ import com.hamster.dao.mapper.SkuStockMapper;
 import com.hamster.dao.param.PageParam;
 import com.hamster.dao.param.SkuFullQueryParam;
 import com.hamster.dao.sku.SkuDao;
+import com.hamster.dao.utils.PageConvertUtils;
 import com.mysql.cj.util.StringUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Repository;
@@ -52,21 +53,26 @@ public class SkuDaoImpl implements SkuDao {
         SkuFullQueryParam skuFullQueryParam = new SkuFullQueryParam();
         skuFullQueryParam.setCode(code);
         skuFullQueryParam.setPoiId(poiId);
-        PageParam pageParam = new PageParam();
-        pageParam.setOffset(page > 0 ? (page - 1) * pageSize : 0);
-        pageParam.setLimit(pageSize);
+        PageParam pageParam = PageConvertUtils.getPageParam(page, pageSize);
         return skuStockMapper.searchProductFullInfoByCode(skuFullQueryParam, pageParam);
 
     }
+
+
 
     @Override
     public List<SkuFullInfo> searchProductFullInfoMergeSizeByCode(String code, long poiId, int page, int pageSize) {
         SkuFullQueryParam skuFullQueryParam = new SkuFullQueryParam();
         skuFullQueryParam.setCode(code);
         skuFullQueryParam.setPoiId(poiId);
-        PageParam pageParam = new PageParam();
-        pageParam.setOffset(page > 0 ? (page - 1) * pageSize : 0);
-        pageParam.setLimit(pageSize);
+        PageParam pageParam = PageConvertUtils.getPageParam(page, pageSize);
         return skuStockMapper.searchProductFullInfoMergeSizeByCode(skuFullQueryParam, pageParam);
+    }
+
+    @Override
+    public List<Sku> getSkuListByid(List<Long> skuIds) {
+        SkuExample skuExample = new SkuExample();
+        skuExample.createCriteria().andIdIn(skuIds);
+        return skuMapper.selectByExample(skuExample);
     }
 }

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hamster.dao.mapper.OrderExtMapper">
+    <resultMap id="BaseResultMap" type="com.hamster.dao.domain.OrderInfo">
+        <id column="order_id" jdbcType="VARCHAR" property="orderId" />
+        <id column="total_pay" jdbcType="BIGINT" property="totalPay" />
+        <id column="sku_name" jdbcType="VARCHAR" property="skuName" />
+        <id column="size" jdbcType="VARCHAR" property="size" />
+        <id column="quantity" jdbcType="BIGINT" property="quantity" />
+        <id column="ctime" jdbcType="BIGINT" property="ctime" />
+        <id column="remark" jdbcType="VARCHAR" property="remark" />
+        <id column="user_id" jdbcType="BIGINT" property="userId" />
+    </resultMap>
+
+    <select id="getOrderInfoByCode" parameterType="map" resultMap="BaseResultMap">
+        SELECT
+        so.order_id,so.total_pay,oi.sku_name,oi.size,oi.quantity,so.ctime,so.remark,so.user_id
+        FROM
+        shop_order so
+        INNER JOIN
+        order_item oi ON so.order_id = oi.order_id
+        where 1=1
+        <if test="code!=null and code != ''">
+            and oi.sku_code=${code}
+        </if>
+        <if test="poiId != null">
+            and so.poi_id=${poiId}
+        </if>
+        order by so.ctime desc
+        <if test="page != null">
+            limit ${page.offset},${page.limit}
+        </if>
+    </select>
+
+    <select id="getOrderInfoByOrderId" parameterType="map" resultMap="BaseResultMap">
+        SELECT
+        so.order_id,so.total_pay,oi.sku_name,oi.size,oi.quantity,so.ctime,so.remark,so.user_id
+        FROM
+        shop_order so
+        INNER JOIN
+        order_item oi ON so.order_id = oi.order_id
+        where 1=1
+        <if test="orderId!=null and orderId != ''">
+            and so.order_id=${orderId}
+        </if>
+
+    </select>
+
+
+
+
+
+</mapper>

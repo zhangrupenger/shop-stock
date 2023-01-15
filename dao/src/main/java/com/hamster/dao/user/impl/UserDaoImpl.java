@@ -40,4 +40,9 @@ public class UserDaoImpl implements UserDao {
         }
         return null;
     }
+
+    @Override
+    public UserInfo getUserByUserId(Long userId) {
+        return userMapper.selectByPrimaryKey(userId);
+    }
 }

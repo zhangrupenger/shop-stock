@@ -1,5 +1,6 @@
 package com.hamster.web.vo;
 
+import com.hamster.service.exception.CodeEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -21,5 +22,10 @@ public class ResultVo<T> {
     public ResultVo(int code, String msg) {
         this.code = code;
         this.msg = msg;
+    }
+
+    public ResultVo(CodeEnum codeEnum) {
+        this.code = codeEnum.getCode();
+        this.msg = codeEnum.getMsg();
     }
 }

@@ -72,4 +72,31 @@ public class StockDaoImpl implements StockDao {
         stockExample.createCriteria().andSkuIdEqualTo(skuId);
         return stockStreamMapper.selectByExample(stockExample);
     }
+
+    @Override
+    public List<Stock> getStock(List<Long> skuIds, long poiId) {
+        StockExample example = new StockExample();
+        example.createCriteria().andSkuIdIn(skuIds).andPoiIdEqualTo(poiId);
+        return stockMapper.selectByExample(example);
+    }
+
+    @Override
+    public void deStock(long skuId, long poiId, int number, String orderId) {
+        StockExample stockExample = new StockExample();
+        stockExample.createCriteria().andSkuIdEqualTo(skuId).andPoiIdEqualTo(poiId);
+        List<Stock> stocks = stockMapper.selectByExample(stockExample);
+        Stock stock = stocks.get(0);
+        stock.setStock(stock.getStock() - number);
+        stockMapper.updateByPrimaryKey(stock);
+
+        StockStream stockStream = new StockStream();
+        stockStream.setSkuId(skuId);
+        stockStream.setQuantity((long)number);
+        stockStream.setOperator(StockOperatorEnum.SALE.getOperator());
+        stockStream.setRemark(StockOperatorEnum.SALE.getDesc());
+        stockStream.setCtime(System.currentTimeMillis());
+        stockStream.setValid((short)1);
+        stockStream.setExtId(orderId);
+        stockStreamMapper.insertSelective(stockStream);
+    }
 }

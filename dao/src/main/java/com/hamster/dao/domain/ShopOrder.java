@@ -43,7 +43,6 @@ public class ShopOrder {
         this.userId = userId;
     }
 
-
     public Long getOriginPrice() {
         return originPrice;
     }

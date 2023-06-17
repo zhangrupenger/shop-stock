@@ -18,6 +18,8 @@ public class WebConfig implements WebMvcConfigurer {
                 .excludePathPatterns("/favicon.ico")
                 .excludePathPatterns("/user/login")
                 .excludePathPatterns("/error")
+                .excludePathPatterns("/")
+                .excludePathPatterns("/csrf")
                 .excludePathPatterns("/swagger-ui.html/**");
     }
 }
